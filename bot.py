@@ -450,7 +450,7 @@ def plans_keyboard(user_id, recharge=False):
         ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
         ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
         ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-        ('9', 'VIP 9', 100000, 15000)
+        ('9', 'VIP 9', 100000, 15000), ('10', 'VIP 10', 250000, 37500)
     ]
     kb = []
     for p in plans:
@@ -625,7 +625,7 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
             ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
             ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-            ('9', 'VIP 9', 100000, 15000)
+            ('9', 'VIP 9', 100000, 15000), ('10', 'VIP 10', 250000, 37500)
         ]
         plan = next((p for p in plans if p[0] == plan_id), None)
         if plan:
@@ -681,7 +681,7 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     return ConversationHandler.END
 
-# ======================== هندلر جدید پشتیبانی با قابلیت دریافت عکس ========================
+# ======================== هندلر پشتیبانی با قابلیت دریافت عکس ========================
 async def support_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """دریافت پیام و عکس از کاربر در بخش پشتیبانی"""
     user_id = update.effective_user.id
@@ -797,6 +797,41 @@ async def admin_send(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id != ADMIN_ID:
         return
     args = context.args
+    if not args:
+        await update.message.reply_text(
+            "📌 Usage:\n"
+            "• Text: /send id1,id2,... message\n"
+            "• Media: reply to a photo/video with /send id1,id2,..."
+        )
+        return
+
+    # حالت ریپلای روی عکس یا ویدیو
+    reply = update.message.reply_to_message
+    if reply and (reply.photo or reply.video):
+        ids = [int(x) for x in args[0].split(',') if x.strip().isdigit()]
+        caption = ' '.join(args[1:]) if len(args) > 1 else (reply.caption or "")
+        success = 0
+        for uid in ids:
+            try:
+                if reply.photo:
+                    await context.bot.send_photo(
+                        uid,
+                        reply.photo[-1].file_id,
+                        caption=caption if caption else None
+                    )
+                elif reply.video:
+                    await context.bot.send_video(
+                        uid,
+                        reply.video.file_id,
+                        caption=caption if caption else None
+                    )
+                success += 1
+            except Exception as e:
+                logger.error(f"❌ Send media to {uid} failed: {e}")
+        await update.message.reply_text(f"✅ Sent to {success} of {len(ids)} users.")
+        return
+
+    # حالت متنی معمولی (مثل قبل)
     if len(args) < 2:
         await update.message.reply_text("📌 /send id1,id2,... message")
         return
@@ -893,8 +928,8 @@ def main():
                 MessageHandler(filters.PHOTO, wallet_handler)
             ],
             WAIT_SUPPORT: [
-                MessageHandler(filters.PHOTO, support_message_handler),  # ✅ دریافت عکس در پشتیبانی
-                MessageHandler(filters.TEXT & ~filters.COMMAND, support_message_handler)  # ✅ دریافت متن در پشتیبانی
+                MessageHandler(filters.PHOTO, support_message_handler),
+                MessageHandler(filters.TEXT & ~filters.COMMAND, support_message_handler)
             ],
         },
         fallbacks=[
