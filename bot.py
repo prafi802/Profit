@@ -100,10 +100,29 @@ def init_db():
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         ''')
+        c.execute('''
+            CREATE TABLE IF NOT EXISTS meta (
+                key TEXT PRIMARY KEY,
+                value TEXT
+            )
+        ''')
         conn.commit()
     logger.info("✅ Database connected and initialized.")
 
+def migrate_default_language():
+    """One-time migration: move all existing 'ru' users to 'en' (runs once)."""
+    with DB_LOCK:
+        c = get_db().cursor()
+        c.execute('SELECT value FROM meta WHERE key = ?', ('default_lang_migrated_en',))
+        row = c.fetchone()
+        if row is None:
+            c.execute("UPDATE users SET language = 'en' WHERE language = 'ru'")
+            c.execute("INSERT OR REPLACE INTO meta (key, value) VALUES (?, ?)", ('default_lang_migrated_en', '1'))
+            get_db().commit()
+            logger.info("✅ One-time migration applied: existing users moved to English default.")
+
 init_db()
+migrate_default_language()
 
 # ======================== توابع دیتابیس ========================
 def get_lang(user_id):
@@ -111,7 +130,7 @@ def get_lang(user_id):
         c = get_db().cursor()
         c.execute('SELECT language FROM users WHERE user_id = ?', (user_id,))
         row = c.fetchone()
-    return row['language'] if row else 'en'
+    return row['language'] if row and row['language'] else 'en'
 
 def set_lang(user_id, lang):
     with DB_LOCK:
@@ -234,7 +253,7 @@ TEXTS = {
         'plan_desc': "📈 План {plan}: {amount} USDT - Ежедневная прибыль {profit}$",
         'deposit': "💳 Внесите {amount} USDT на:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 После оплаты отправьте скриншот",
         'recharge_deposit': "🔄 Внесите разницу для улучшения:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 После оплаты отправьте скриншот",
-        'screenshot_ok': "✅ Скриншот получен. Отправьте адрес кошелька (BEP20):",
+        'screenshot_ok': "✅ Скриншот получен.\n\n💳 Теперь отправьте адрес кошелька USDT в сети BEP20 (начинается с 0x) или TRC20 (начинается с T):",
         'wallet_ok': "✅ Запрос отправлен администратору.",
         'support_msg': "📝 Напишите сообщение (можно отправить фото):",
         'support_sent': "✅ Отправлено в поддержку.",
@@ -311,7 +330,7 @@ Jaw Support Team 🧠""",
         'plan_desc': "📈 Plan {plan}: {amount} USDT - Daily {profit}$",
         'deposit': "💳 Deposit {amount} USDT to:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 After payment, send the screenshot",
         'recharge_deposit': "🔄 Deposit difference to upgrade:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 After payment, send the screenshot",
-        'screenshot_ok': "✅ Screenshot received. Send wallet address (BEP20):",
+        'screenshot_ok': "✅ Screenshot received.\n\n💳 Now send your USDT wallet address on either BEP20 (starts with 0x) or TRC20 (starts with T) network:",
         'wallet_ok': "✅ Request sent to admin.",
         'support_msg': "📝 Write your message (you can send a photo):",
         'support_sent': "✅ Sent to support.",
@@ -388,7 +407,7 @@ Jaw Support Team 🧠""",
         'plan_desc': "📈 الخطة {plan}: {amount} USDT - ربح يومي {profit}$",
         'deposit': "💳 أودع {amount} USDT على:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
         'recharge_deposit': "🔄 أودع الفرق للترقية:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
-        'screenshot_ok': "✅ تم استلام لقطة الشاشة. أرسل عنوان المحفظة (BEP20):",
+        'screenshot_ok': "✅ تم استلام لقطة الشاشة.\n\n💳 الآن أرسل عنوان محفظة USDT على شبكة BEP20 (يبدأ بـ 0x) أو TRC20 (يبدأ بـ T):",
         'wallet_ok': "✅ تم إرسال الطلب إلى المشرف.",
         'support_msg': "📝 اكتب رسالتك (يمكنك إرسال صورة):",
         'support_sent': "✅ تم الإرسال إلى الدعم.",
@@ -632,7 +651,7 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     get_text(user_id, 'referral_error'),
                     reply_markup=main_menu(user_id)
                 )
-                return
+                return ConversationHandler.END
             link = f"https://t.me/{bot_username}?start=ref_{user_id}"
             await query.edit_message_text(
                 get_text(user_id, 'referral_text', link=link),
@@ -663,6 +682,7 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await query.edit_message_text(get_text(user_id, 'main_menu'), reply_markup=main_menu(user_id))
         except:
             pass
+        return ConversationHandler.END
     
     elif data.startswith('plan_'):
         parts = data.split('_')
@@ -689,14 +709,20 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def screenshot_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+
     if 'invest_plan' not in context.user_data:
         await update.message.reply_text(get_text(user_id, 'main_menu'), reply_markup=main_menu(user_id))
         return ConversationHandler.END
-    
+
     if not update.message.photo:
-        await update.message.reply_text("📸 Please send a screenshot image.")
+        await update.message.reply_text(
+            "📸 Please send the payment *screenshot* as a photo.\n\n"
+            "How to send as photo:\n"
+            "• Tap the 📎 attach icon\n"
+            "• Choose Gallery → select the screenshot"
+        )
         return WAIT_SCREENSHOT
-    
+
     photo = update.message.photo[-1]
     context.user_data['screenshot_id'] = photo.file_id
     await update.message.reply_text(get_text(user_id, 'screenshot_ok'))
@@ -704,34 +730,63 @@ async def screenshot_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
 async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
+
+    if 'invest_plan' not in context.user_data or 'screenshot_id' not in context.user_data:
+        await update.message.reply_text(get_text(user_id, 'main_menu'), reply_markup=main_menu(user_id))
+        return ConversationHandler.END
+
     if update.message.photo:
-        await update.message.reply_text("⚠️ Please send wallet address as text, not photo.")
+        await update.message.reply_text("⚠️ Please send your wallet address as text, not as a photo.")
         return WAIT_WALLET
-    
+
     if not update.message.text:
-        await update.message.reply_text("⚠️ Please send wallet address as text.")
+        await update.message.reply_text("⚠️ Please send your wallet address as text.")
         return WAIT_WALLET
-    
+
     wallet = update.message.text.strip()
-    if not wallet.startswith('0x') or len(wallet) != 42:
-        await update.message.reply_text("⚠️ Invalid BEP20 address (must start with 0x).")
+
+    is_bep20 = wallet.startswith('0x') and len(wallet) == 42
+    is_trc20 = wallet.startswith('T') and len(wallet) == 34
+
+    if not (is_bep20 or is_trc20):
+        await update.message.reply_text(
+            "⚠️ Invalid wallet address.\n\n"
+            "• BEP20 (USDT): starts with 0x and 42 characters total\n"
+            "• TRC20 (USDT): starts with T and 34 characters total"
+        )
         return WAIT_WALLET
 
     plan = context.user_data['invest_plan']
-    inv_id = add_investment(user_id, plan['name'], plan['amount'], plan['profit'], context.user_data['screenshot_id'], wallet, plan['mode'] == 'recharge')
+    inv_id = add_investment(
+        user_id, plan['name'], plan['amount'], plan['profit'],
+        context.user_data['screenshot_id'], wallet,
+        plan['mode'] == 'recharge'
+    )
 
-    admin_text = f"📩 Investment request:\n👤 User: {user_id}\n📊 Plan: {plan['name']}\n💰 Amount: {plan['amount']} USDT\n🏦 Wallet: {wallet}"
-    await context.bot.send_photo(ADMIN_ID, context.user_data['screenshot_id'], caption=f"📸 Screenshot from user {user_id}")
-    keyboard = InlineKeyboardMarkup([[InlineKeyboardButton("✅ Approve", callback_data=f'approve_{inv_id}'), InlineKeyboardButton("❌ Reject", callback_data=f'reject_{inv_id}')]])
+    admin_text = (
+        f"📩 Investment request:\n"
+        f"👤 User: {user_id}\n"
+        f"📊 Plan: {plan['name']}\n"
+        f"💰 Amount: {plan['amount']} USDT\n"
+        f"🏦 Wallet: {wallet}"
+    )
+    await context.bot.send_photo(
+        ADMIN_ID,
+        context.user_data['screenshot_id'],
+        caption=f"📸 Screenshot from user {user_id}"
+    )
+    keyboard = InlineKeyboardMarkup([[
+        InlineKeyboardButton("✅ Approve", callback_data=f'approve_{inv_id}'),
+        InlineKeyboardButton("❌ Reject", callback_data=f'reject_{inv_id}')
+    ]])
     await context.bot.send_message(ADMIN_ID, admin_text, reply_markup=keyboard)
 
     await update.message.reply_text(get_text(user_id, 'wallet_ok'), reply_markup=main_menu(user_id))
     context.user_data.clear()
     return ConversationHandler.END
 
-# ======================== هندلر پشتیبانی با قابلیت دریافت عکس ========================
+# ======================== هندلر پشتیبانی ========================
 async def support_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Receive message and photo from user in support section"""
     user_id = update.effective_user.id
     message = update.message
     photo_file_id = None
@@ -960,15 +1015,16 @@ def main():
         states={
             WAIT_SCREENSHOT: [
                 MessageHandler(filters.PHOTO, screenshot_handler),
-                MessageHandler(filters.TEXT & ~filters.COMMAND, screenshot_handler)
+                MessageHandler(filters.TEXT & ~filters.COMMAND, screenshot_handler),
+                MessageHandler(filters.ALL, screenshot_handler),
             ],
             WAIT_WALLET: [
                 MessageHandler(filters.TEXT & ~filters.COMMAND, wallet_handler),
-                MessageHandler(filters.PHOTO, wallet_handler)
+                MessageHandler(filters.ALL, wallet_handler),
             ],
             WAIT_SUPPORT: [
                 MessageHandler(filters.PHOTO, support_message_handler),
-                MessageHandler(filters.TEXT & ~filters.COMMAND, support_message_handler)
+                MessageHandler(filters.TEXT & ~filters.COMMAND, support_message_handler),
             ],
         },
         fallbacks=[
@@ -982,7 +1038,7 @@ def main():
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CallbackQueryHandler(lang_callback, pattern='^lang_'))
     app.add_handler(CallbackQueryHandler(go_menu_callback, pattern='^go_menu$'))
-    app.add_handler(CallbackQueryHandler(menu_callback, pattern='^(referral|about|change_lang|back)$'))
+    app.add_handler(CallbackQueryHandler(menu_callback, pattern='^(referral|about|change_lang)$'))
     app.add_handler(conv)
     app.add_handler(CallbackQueryHandler(admin_approve, pattern='^(approve|reject)_'))
     app.add_handler(CommandHandler('block', admin_block))
@@ -990,6 +1046,12 @@ def main():
     app.add_handler(CommandHandler('send', admin_send))
     app.add_handler(CommandHandler('users', admin_users))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown))
+
+    # group 1: fallback 'back' when no conversation is active
+    app.add_handler(
+        CallbackQueryHandler(menu_callback, pattern='^back$'),
+        group=1
+    )
 
     loop = asyncio.get_event_loop()
     loop.run_until_complete(set_menu(app))
