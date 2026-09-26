@@ -62,7 +62,7 @@ def init_db():
         c.execute('''
             CREATE TABLE IF NOT EXISTS users (
                 user_id INTEGER PRIMARY KEY,
-                language TEXT DEFAULT 'ru',
+                language TEXT DEFAULT 'en',
                 referrer_id INTEGER,
                 referral_code TEXT UNIQUE,
                 is_blocked BOOLEAN DEFAULT 0,
@@ -111,7 +111,7 @@ def get_lang(user_id):
         c = get_db().cursor()
         c.execute('SELECT language FROM users WHERE user_id = ?', (user_id,))
         row = c.fetchone()
-    return row['language'] if row else 'ru'
+    return row['language'] if row else 'en'
 
 def set_lang(user_id, lang):
     with DB_LOCK:
@@ -147,7 +147,7 @@ def get_or_create_user(user_id, referrer_id=None):
             code = f"{user_id}{random.randint(1000,9999)}"
             c.execute('''
                 INSERT INTO users (user_id, language, referrer_id, referral_code, is_blocked)
-                VALUES (?, 'ru', ?, ?, 0)
+                VALUES (?, 'en', ?, ?, 0)
             ''', (user_id, referrer_id, code))
             get_db().commit()
             if referrer_id and referrer_id != user_id:
@@ -232,8 +232,8 @@ TEXTS = {
         'lang_btn': "🌐 Язык",
         'plans_title': "📊 Выберите план:\n\n📸 После оплаты отправьте скриншот транзакции",
         'plan_desc': "📈 План {plan}: {amount} USDT - Ежедневная прибыль {profit}$",
-        'deposit': "💳 Внесите {amount} USDT на:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 Сеть: BEP20\n\n📸 После оплаты отправьте скриншот",
-        'recharge_deposit': "🔄 Внесите разницу для улучшения:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 Сеть: BEP20\n\n📸 После оплаты отправьте скриншот",
+        'deposit': "💳 Внесите {amount} USDT на:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 После оплаты отправьте скриншот",
+        'recharge_deposit': "🔄 Внесите разницу для улучшения:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 После оплаты отправьте скриншот",
         'screenshot_ok': "✅ Скриншот получен. Отправьте адрес кошелька (BEP20):",
         'wallet_ok': "✅ Запрос отправлен администратору.",
         'support_msg': "📝 Напишите сообщение (можно отправить фото):",
@@ -269,7 +269,23 @@ Our support team operates in three time‑zone shifts (UTC‑4 to UTC+8), provid
 · Proven track record: Since 2025, JAW has completed 18,700+ real trades with an average win rate of 89.2% and a maximum realised drawdown below 6.5% (back‑tested and live‑verified).
 
 🔥 Coming in 2026 – JAW v3.0
-The next major upgrade introduces black‑swan hedging protocols, multi‑wallet synchronisation, and a copy‑trading module that allows transparent replication of top‑performing strategies. We are building the first decentralised AI‑managed liquidity pool – and JAW is only the beginning.""",
+The next major upgrade introduces black‑swan hedging protocols, multi‑wallet synchronisation, and a copy‑trading module that allows transparent replication of top‑performing strategies. We are building the first decentralised AI‑managed liquidity pool – and JAW is only the beginning.
+
+📢 Specialized Announcement – Currency Plans Profit Adjustment
+
+To: Investors of $100,000 and $250,000 Plans
+
+Daily profit rate is 25%, based on continuous Forex market activity and interbank settlements.
+
+📌 Weekend Exception:
+Due to official Forex closure on Saturdays and Sundays, the rate drops to 10% on these two days.
+
+🔄 Return:
+Starting Monday, the rate returns to 25%.
+
+Please plan accordingly.
+
+Jaw Support Team 🧠""",
         'referral_text': "👥 Ваша ссылка:\n{link}\n🎁 7 USDT за каждого активного друга",
         'referral_error': "❌ Ошибка при получении ссылки. Пожалуйста, попробуйте позже.",
         'approved': "✅ Инвестиция одобрена!",
@@ -293,8 +309,8 @@ The next major upgrade introduces black‑swan hedging protocols, multi‑wallet
         'lang_btn': "🌐 Language",
         'plans_title': "📊 Choose your plan:\n\n📸 After payment, send the transaction screenshot",
         'plan_desc': "📈 Plan {plan}: {amount} USDT - Daily {profit}$",
-        'deposit': "💳 Deposit {amount} USDT to:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 Network: BEP20\n\n📸 After payment, send the screenshot",
-        'recharge_deposit': "🔄 Deposit difference to upgrade:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 Network: BEP20\n\n📸 After payment, send the screenshot",
+        'deposit': "💳 Deposit {amount} USDT to:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 After payment, send the screenshot",
+        'recharge_deposit': "🔄 Deposit difference to upgrade:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 After payment, send the screenshot",
         'screenshot_ok': "✅ Screenshot received. Send wallet address (BEP20):",
         'wallet_ok': "✅ Request sent to admin.",
         'support_msg': "📝 Write your message (you can send a photo):",
@@ -330,7 +346,23 @@ Our support team operates in three time‑zone shifts (UTC‑4 to UTC+8), provid
 · Proven track record: Since 2025, JAW has completed 18,700+ real trades with an average win rate of 89.2% and a maximum realised drawdown below 6.5% (back‑tested and live‑verified).
 
 🔥 Coming in 2026 – JAW v3.0
-The next major upgrade introduces black‑swan hedging protocols, multi‑wallet synchronisation, and a copy‑trading module that allows transparent replication of top‑performing strategies. We are building the first decentralised AI‑managed liquidity pool – and JAW is only the beginning.""",
+The next major upgrade introduces black‑swan hedging protocols, multi‑wallet synchronisation, and a copy‑trading module that allows transparent replication of top‑performing strategies. We are building the first decentralised AI‑managed liquidity pool – and JAW is only the beginning.
+
+📢 Specialized Announcement – Currency Plans Profit Adjustment
+
+To: Investors of $100,000 and $250,000 Plans
+
+Daily profit rate is 25%, based on continuous Forex market activity and interbank settlements.
+
+📌 Weekend Exception:
+Due to official Forex closure on Saturdays and Sundays, the rate drops to 10% on these two days.
+
+🔄 Return:
+Starting Monday, the rate returns to 25%.
+
+Please plan accordingly.
+
+Jaw Support Team 🧠""",
         'referral_text': "👥 Your link:\n{link}\n🎁 7 USDT per active referral",
         'referral_error': "❌ Error generating referral link. Please try again later.",
         'approved': "✅ Investment approved!",
@@ -354,8 +386,8 @@ The next major upgrade introduces black‑swan hedging protocols, multi‑wallet
         'lang_btn': "🌐 اللغة",
         'plans_title': "📊 اختر خطتك:\n\n📸 بعد الدفع، أرسل لقطة شاشة المعاملة",
         'plan_desc': "📈 الخطة {plan}: {amount} USDT - ربح يومي {profit}$",
-        'deposit': "💳 أودع {amount} USDT على:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 الشبكة: BEP20\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
-        'recharge_deposit': "🔄 أودع الفرق للترقية:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n🌐 الشبكة: BEP20\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
+        'deposit': "💳 أودع {amount} USDT على:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
+        'recharge_deposit': "🔄 أودع الفرق للترقية:\n\n🔹 BEP20:\n0x3868b69862f51c74B9d51a50f9c08B6Abc7546C5\n\n🔹 USDT TRC20:\nTFLaAnhiox3tR6ucb48bBmgATXTnrfbJqa\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
         'screenshot_ok': "✅ تم استلام لقطة الشاشة. أرسل عنوان المحفظة (BEP20):",
         'wallet_ok': "✅ تم إرسال الطلب إلى المشرف.",
         'support_msg': "📝 اكتب رسالتك (يمكنك إرسال صورة):",
@@ -391,7 +423,23 @@ JAW ليست خدمة إشارات – بل تنشر سيولة حقيقية م�
 · سجل حافل: منذ عام 2025، أكمل JAW أكثر من 18,700 صفقة حقيقية بمعدل ربح 89.2% وأقصى انخفاض محقق أقل من 6.5% (تم اختباره والتحقق منه على الواقع الحي).
 
 🔥 قادم في 2026 – JAW v3.0
-تقدم الترقية الكبرى القادمة بروتوكولات التحوط ضد الأحداث النادرة، ومزامنة متعددة المحافظ، ووحدة نسخ التداول التي تسمح بالنسخ الشفاف للاستراتيجيات الأعلى أداءً. نبني أول مجمع سيولة لامركزي يُدار بالذكاء الاصطناعي – وJAW ليست سوى البداية.""",
+تقدم الترقية الكبرى القادمة بروتوكولات التحوط ضد الأحداث النادرة، ومزامنة متعددة المحافظ، ووحدة نسخ التداول التي تسمح بالنسخ الشفاف للاستراتيجيات الأعلى أداءً. نبني أول مجمع سيولة لامركزي يُدار بالذكاء الاصطناعي – وJAW ليست سوى البداية.
+
+📢 Specialized Announcement – Currency Plans Profit Adjustment
+
+To: Investors of $100,000 and $250,000 Plans
+
+Daily profit rate is 25%, based on continuous Forex market activity and interbank settlements.
+
+📌 Weekend Exception:
+Due to official Forex closure on Saturdays and Sundays, the rate drops to 10% on these two days.
+
+🔄 Return:
+Starting Monday, the rate returns to 25%.
+
+Please plan accordingly.
+
+Jaw Support Team 🧠""",
         'referral_text': "👥 رابطك:\n{link}\n🎁 7 USDT لكل صديق نشط",
         'referral_error': "❌ خطأ في إنشاء رابط الإحالة. يرجى المحاولة لاحقاً.",
         'approved': "✅ تمت الموافقة على الاستثمار!",
@@ -409,8 +457,8 @@ JAW ليست خدمة إشارات – بل تنشر سيولة حقيقية م�
 def get_text(user_id, key, **kwargs):
     lang = get_lang(user_id)
     if lang not in TEXTS:
-        lang = 'ru'
-    text = TEXTS[lang].get(key, TEXTS['ru'].get(key, ''))
+        lang = 'en'
+    text = TEXTS[lang].get(key, TEXTS['en'].get(key, ''))
     if kwargs:
         try:
             return text.format(**kwargs)
@@ -450,7 +498,7 @@ def plans_keyboard(user_id, recharge=False):
         ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
         ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
         ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-        ('9', 'VIP 9', 100000, 15000), ('10', 'VIP 10', 250000, 37500)
+        ('9', 'VIP 9', 100000, 25000), ('10', 'VIP 10', 250000, 62500)
     ]
     kb = []
     for p in plans:
@@ -625,7 +673,7 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
             ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
             ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
             ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-            ('9', 'VIP 9', 100000, 15000), ('10', 'VIP 10', 250000, 37500)
+            ('9', 'VIP 9', 100000, 25000), ('10', 'VIP 10', 250000, 62500)
         ]
         plan = next((p for p in plans if p[0] == plan_id), None)
         if plan:
@@ -683,32 +731,28 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ======================== هندلر پشتیبانی با قابلیت دریافت عکس ========================
 async def support_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """دریافت پیام و عکس از کاربر در بخش پشتیبانی"""
+    """Receive message and photo from user in support section"""
     user_id = update.effective_user.id
     message = update.message
     photo_file_id = None
     caption = None
 
-    # اگر کاربر عکس فرستاده
     if message.photo:
         photo_file_id = message.photo[-1].file_id
-        caption = message.caption if message.caption else "📸 (بدون متن)"
+        caption = message.caption if message.caption else "📸 (no text)"
     else:
-        caption = message.text if message.text else "📝 (بدون متن)"
+        caption = message.text if message.text else "📝 (no text)"
 
-    # ذخیره در دیتابیس
     add_support(user_id, caption, photo_file_id)
 
-    # ارسال به ادمین
     try:
-        admin_text = f"📩 پیام پشتیبانی از کاربر {user_id}:\n\n{caption}"
+        admin_text = f"📩 Support message from user {user_id}:\n\n{caption}"
         
         if photo_file_id:
-            # ارسال عکس به همراه پیام
             await context.bot.send_photo(
                 ADMIN_ID,
                 photo_file_id,
-                caption=admin_text[:1024]  # محدودیت کپشن تلگرام
+                caption=admin_text[:1024]
             )
         else:
             await context.bot.send_message(ADMIN_ID, admin_text)
@@ -719,7 +763,7 @@ async def support_message_handler(update: Update, context: ContextTypes.DEFAULT_
         )
     except Exception as e:
         logger.error(f"❌ Error sending support: {e}")
-        await update.message.reply_text("⚠️ خطا در ارسال. لطفاً دوباره تلاش کنید.")
+        await update.message.reply_text("⚠️ Error sending. Please try again.")
 
     return ConversationHandler.END
 
@@ -805,7 +849,6 @@ async def admin_send(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # حالت ریپلای روی عکس یا ویدیو
     reply = update.message.reply_to_message
     if reply and (reply.photo or reply.video):
         ids = [int(x) for x in args[0].split(',') if x.strip().isdigit()]
@@ -831,7 +874,6 @@ async def admin_send(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(f"✅ Sent to {success} of {len(ids)} users.")
         return
 
-    # حالت متنی معمولی (مثل قبل)
     if len(args) < 2:
         await update.message.reply_text("📌 /send id1,id2,... message")
         return
@@ -904,15 +946,12 @@ async def set_commands(app):
 
 # ======================== اجرای اصلی ========================
 def main():
-    # ---------- اجرای سرور HTTP در یک ترد جداگانه برای Render ----------
     server_thread = threading.Thread(target=run_http_server, daemon=True)
     server_thread.start()
     logger.info(f"✅ HTTP Server started on port {os.environ.get('PORT', 10000)}")
 
-    # ---------- ساخت اپلیکیشن تلگرام ----------
     app = Application.builder().token(TOKEN).build()
 
-    # ---------- هندلر مکالمه ----------
     conv = ConversationHandler(
         entry_points=[
             CommandHandler('support', support_command),
@@ -940,7 +979,6 @@ def main():
         per_message=False,
     )
 
-    # ---------- ثبت هندلرها ----------
     app.add_handler(CommandHandler('start', start))
     app.add_handler(CallbackQueryHandler(lang_callback, pattern='^lang_'))
     app.add_handler(CallbackQueryHandler(go_menu_callback, pattern='^go_menu$'))
@@ -953,12 +991,10 @@ def main():
     app.add_handler(CommandHandler('users', admin_users))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, unknown))
 
-    # ---------- تنظیمات اولیه ----------
     loop = asyncio.get_event_loop()
     loop.run_until_complete(set_menu(app))
     loop.run_until_complete(set_commands(app))
 
-    # ---------- اجرای ربات با پولینگ ----------
     logger.info("🚀 Starting bot with Polling (timeout=60s)")
     app.run_polling(
         poll_interval=1.0,
