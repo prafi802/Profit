@@ -725,6 +725,10 @@ async def screenshot_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     photo = update.message.photo[-1]
     context.user_data['screenshot_id'] = photo.file_id
+    # Store the original message_id + chat_id so we can forward it later
+    context.user_data['screenshot_message_id'] = update.message.message_id
+    context.user_data['screenshot_chat_id'] = update.effective_chat.id
+
     await update.message.reply_text(get_text(user_id, 'screenshot_ok'))
     return WAIT_WALLET
 
@@ -763,23 +767,52 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         plan['mode'] == 'recharge'
     )
 
+    # ---------- Forward the original screenshot message to admin ----------
+    # This shows "Forwarded from <User>" — admin can tap it to open the user's profile.
+    forwarded_ok = False
+    try:
+        await context.bot.forward_message(
+            chat_id=ADMIN_ID,
+            from_chat_id=context.user_data.get('screenshot_chat_id', user_id),
+            message_id=context.user_data['screenshot_message_id'],
+        )
+        forwarded_ok = True
+    except Exception as e:
+        logger.error(f"❌ Forward screenshot failed: {e}")
+
+    # Fallback: if forward failed, send the photo the old way
+    if not forwarded_ok:
+        try:
+            await context.bot.send_photo(
+                ADMIN_ID,
+                context.user_data['screenshot_id'],
+                caption=f"📸 Screenshot from user {user_id}"
+            )
+        except Exception as e:
+            logger.error(f"❌ Fallback send_photo failed: {e}")
+
+    # ---------- Send details + Approve/Reject buttons ----------
     admin_text = (
         f"📩 Investment request:\n"
         f"👤 User: {user_id}\n"
+        f"🔗 Profile: <a href=\"tg://user?id={user_id}\">{user_id}</a>\n"
         f"📊 Plan: {plan['name']}\n"
         f"💰 Amount: {plan['amount']} USDT\n"
         f"🏦 Wallet: {wallet}"
-    )
-    await context.bot.send_photo(
-        ADMIN_ID,
-        context.user_data['screenshot_id'],
-        caption=f"📸 Screenshot from user {user_id}"
     )
     keyboard = InlineKeyboardMarkup([[
         InlineKeyboardButton("✅ Approve", callback_data=f'approve_{inv_id}'),
         InlineKeyboardButton("❌ Reject", callback_data=f'reject_{inv_id}')
     ]])
-    await context.bot.send_message(ADMIN_ID, admin_text, reply_markup=keyboard)
+    try:
+        await context.bot.send_message(
+            ADMIN_ID, admin_text,
+            reply_markup=keyboard,
+            parse_mode='HTML',
+            disable_web_page_preview=True
+        )
+    except Exception as e:
+        logger.error(f"❌ Sending details to admin failed: {e}")
 
     await update.message.reply_text(get_text(user_id, 'wallet_ok'), reply_markup=main_menu(user_id))
     context.user_data.clear()
