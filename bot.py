@@ -251,8 +251,8 @@ TEXTS = {
         'lang_btn': "🌐 Язык",
         'plans_title': "📊 Выберите план:\n\n📸 После оплаты отправьте скриншот транзакции",
         'plan_desc': "📈 {plan}: {amount} USDT - Ежедневная прибыль {profit}$",
-        'deposit': "💳 Внесите {amount} USDT на:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 После оплаты отправьте скриншот",
-        'recharge_deposit': "🔄 Внесите разницу для улучшения:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 После оплаты отправьте скриншот",
+        'deposit': "💳 Внесите {amount} USDT на:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 После оплаты отправьте скриншот",
+        'recharge_deposit': "🔄 Внесите разницу для улучшения:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 После оплаты отправьте скриншот",
         'screenshot_ok': "✅ Скриншот получен.\n\n💳 Теперь отправьте адрес кошелька USDT в сети BEP20 (начинается с 0x) или TRC20 (начинается с T):",
         'wallet_ok': "✅ Запрос отправлен администратору.",
         'support_msg': "📝 Напишите сообщение (можно отправить фото):",
@@ -328,8 +328,8 @@ Jaw Support Team 🧠""",
         'lang_btn': "🌐 Language",
         'plans_title': "📊 Choose your plan:\n\n📸 After payment, send the transaction screenshot",
         'plan_desc': "📈 {plan}: {amount} USDT - Daily {profit}$",
-        'deposit': "💳 Deposit {amount} USDT to:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 After payment, send the screenshot",
-        'recharge_deposit': "🔄 Deposit difference to upgrade:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 After payment, send the screenshot",
+        'deposit': "💳 Deposit {amount} USDT to:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 After payment, send the screenshot",
+        'recharge_deposit': "🔄 Deposit difference to upgrade:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 After payment, send the screenshot",
         'screenshot_ok': "✅ Screenshot received.\n\n💳 Now send your USDT wallet address on either BEP20 (starts with 0x) or TRC20 (starts with T) network:",
         'wallet_ok': "✅ Request sent to admin.",
         'support_msg': "📝 Write your message (you can send a photo):",
@@ -405,8 +405,8 @@ Jaw Support Team 🧠""",
         'lang_btn': "🌐 اللغة",
         'plans_title': "📊 اختر خطتك:\n\n📸 بعد الدفع، أرسل لقطة شاشة المعاملة",
         'plan_desc': "📈 {plan}: {amount} USDT - ربح يومي {profit}$",
-        'deposit': "💳 أودع {amount} USDT على:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
-        'recharge_deposit': "🔄 أودع الفرق للترقية:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
+        'deposit': "💳 أودع {amount} USDT على:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
+        'recharge_deposit': "🔄 أودع الفرق للترقية:\n\n🔹 BEP20:\n0xc05e261177fd84D01bf02782014F9d64cDDDd481\n\n🔹 USDT TRC20:\nTCfWsx7JQL886FzWCnEsnAQaM7iwvrettc\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
         'screenshot_ok': "✅ تم استلام لقطة الشاشة.\n\n💳 الآن أرسل عنوان محفظة USDT على شبكة BEP20 (يبدأ بـ 0x) أو TRC20 (يبدأ بـ T):",
         'wallet_ok': "✅ تم إرسال الطلب إلى المشرف.",
         'support_msg': "📝 اكتب رسالتك (يمكنك إرسال صورة):",
@@ -727,7 +727,6 @@ async def screenshot_handler(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
     photo = update.message.photo[-1]
     context.user_data['screenshot_id'] = photo.file_id
-    # Store the original message_id + chat_id so we can forward it later
     context.user_data['screenshot_message_id'] = update.message.message_id
     context.user_data['screenshot_chat_id'] = update.effective_chat.id
 
@@ -769,7 +768,6 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         plan['mode'] == 'recharge'
     )
 
-    # ---------- Forward the original screenshot message to admin ----------
     forwarded_ok = False
     try:
         await context.bot.forward_message(
@@ -791,7 +789,6 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             logger.error(f"❌ Fallback send_photo failed: {e}")
 
-    # ---------- Send details + Approve/Reject buttons ----------
     admin_text = (
         f"📩 Investment request:\n"
         f"👤 User: {user_id}\n"
@@ -818,7 +815,6 @@ async def wallet_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     return ConversationHandler.END
 
-# ======================== هندلر پشتیبانی ========================
 async def support_message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     message = update.message
