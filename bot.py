@@ -250,7 +250,7 @@ TEXTS = {
         'support_btn': "📞 Поддержка",
         'lang_btn': "🌐 Язык",
         'plans_title': "📊 Выберите план:\n\n📸 После оплаты отправьте скриншот транзакции",
-        'plan_desc': "📈 План {plan}: {amount} USDT - Ежедневная прибыль {profit}$",
+        'plan_desc': "💎 {plan}: {amount} USDT - Ежедневная прибыль {profit}$",
         'deposit': "💳 Внесите {amount} USDT на:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 После оплаты отправьте скриншот",
         'recharge_deposit': "🔄 Внесите разницу для улучшения:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 После оплаты отправьте скриншот",
         'screenshot_ok': "✅ Скриншот получен.\n\n💳 Теперь отправьте адрес кошелька USDT в сети BEP20 (начинается с 0x) или TRC20 (начинается с T):",
@@ -327,7 +327,7 @@ Jaw Support Team 🧠""",
         'support_btn': "📞 Support",
         'lang_btn': "🌐 Language",
         'plans_title': "📊 Choose your plan:\n\n📸 After payment, send the transaction screenshot",
-        'plan_desc': "📈 Plan {plan}: {amount} USDT - Daily {profit}$",
+        'plan_desc': "💎 {plan}: {amount} USDT - Daily {profit}$",
         'deposit': "💳 Deposit {amount} USDT to:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 After payment, send the screenshot",
         'recharge_deposit': "🔄 Deposit difference to upgrade:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 After payment, send the screenshot",
         'screenshot_ok': "✅ Screenshot received.\n\n💳 Now send your USDT wallet address on either BEP20 (starts with 0x) or TRC20 (starts with T) network:",
@@ -404,7 +404,7 @@ Jaw Support Team 🧠""",
         'support_btn': "📞 الدعم",
         'lang_btn': "🌐 اللغة",
         'plans_title': "📊 اختر خطتك:\n\n📸 بعد الدفع، أرسل لقطة شاشة المعاملة",
-        'plan_desc': "📈 الخطة {plan}: {amount} USDT - ربح يومي {profit}$",
+        'plan_desc': "💎 {plan}: {amount} USDT - ربح يومي {profit}$",
         'deposit': "💳 أودع {amount} USDT على:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
         'recharge_deposit': "🔄 أودع الفرق للترقية:\n\n🔹 BEP20:\n0x9afbD1334536999aEeb7CB9fA710795F0b0cBeaF\n\n🔹 USDT TRC20:\nTVb6Fr5hGtWfbJQoD3Fuxy2MYhj5KkMMbQ\n\n📸 بعد الدفع، أرسل لقطة الشاشة",
         'screenshot_ok': "✅ تم استلام لقطة الشاشة.\n\n💳 الآن أرسل عنوان محفظة USDT على شبكة BEP20 (يبدأ بـ 0x) أو TRC20 (يبدأ بـ T):",
@@ -513,11 +513,12 @@ def back_btn(user_id):
 
 def plans_keyboard(user_id, recharge=False):
     plans = [
-        ('1', 'VIP 1', 60, 9), ('2', 'VIP 2', 100, 15),
-        ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
-        ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
-        ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-        ('9', 'VIP 9', 100000, 25000), ('10', 'VIP 10', 250000, 62500)
+        ('1', 'Diamond', 60, 9), ('2', 'Diamond', 100, 15),
+        ('3', 'Diamond', 200, 30), ('4', 'Diamond', 500, 75),
+        ('5', 'Diamond', 1000, 150), ('6', 'Diamond', 5000, 750),
+        ('7', 'Diamond', 20000, 3000), ('8', 'Diamond', 50000, 7500),
+        ('9', 'Diamond', 100000, 25000), ('10', 'Diamond', 250000, 62500),
+        ('11', 'Diamond', 500000, 160000)
     ]
     kb = []
     for p in plans:
@@ -689,11 +690,12 @@ async def menu_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         plan_id = parts[1]
         mode = parts[2]
         plans = [
-            ('1', 'VIP 1', 60, 9), ('2', 'VIP 2', 100, 15),
-            ('3', 'VIP 3', 200, 30), ('4', 'VIP 4', 500, 75),
-            ('5', 'VIP 5', 1000, 150), ('6', 'VIP 6', 5000, 750),
-            ('7', 'VIP 7', 20000, 3000), ('8', 'VIP 8', 50000, 7500),
-            ('9', 'VIP 9', 100000, 25000), ('10', 'VIP 10', 250000, 62500)
+            ('1', 'Diamond', 60, 9), ('2', 'Diamond', 100, 15),
+            ('3', 'Diamond', 200, 30), ('4', 'Diamond', 500, 75),
+            ('5', 'Diamond', 1000, 150), ('6', 'Diamond', 5000, 750),
+            ('7', 'Diamond', 20000, 3000), ('8', 'Diamond', 50000, 7500),
+            ('9', 'Diamond', 100000, 25000), ('10', 'Diamond', 250000, 62500),
+            ('11', 'Diamond', 500000, 160000)
         ]
         plan = next((p for p in plans if p[0] == plan_id), None)
         if plan:
